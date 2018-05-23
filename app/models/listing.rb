@@ -24,8 +24,11 @@ class Listing < ApplicationRecord
     group by t.range
     SQL
 
-  DEFAULT_RANGE_GROUPS = {
-                          "600-799"=>0,
+  # I probably wouldn't hard code these ranges in the real world. I'm a big fan
+  # of 'separate the behavior from the data, and then find a way to iterate through the data.'
+  # I would then add the ranges in an ENV variable. I will say, it is nice and explicit though.
+
+  DEFAULT_RANGE_GROUPS = {"600-799"=>0,
                           "800-999"=>0,
                           "1000-1199"=>0,
                           "1200-1399"=>0,
