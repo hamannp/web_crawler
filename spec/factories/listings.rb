@@ -4,9 +4,9 @@ FactoryBot.define do
     price ""
     housing ""
     body ""
+    listing_attributes ['dogs', 'cats', 'pool']
     available_date "2018-05-22"
     available_message "MyString"
-    listing_attributes "MyText"
     street_address "MyString"
     google_map_url "MyText"
     latitude ""

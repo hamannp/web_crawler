@@ -1,0 +1,16 @@
+<h1>Listing Summary</h1>
+
+<table>
+  <thead>
+    <th>Price Range $US</th>
+    <th>Count</th>
+  </thead>
+  <tbody>
+    <% @rows.each do |range, count| %>
+    <tr>
+      <td><%=range%></td>
+      <td><%=count%></td>
+    </tr>
+    <% end %>
+  </tbody>
+</table>

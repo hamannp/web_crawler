@@ -45,7 +45,9 @@ RSpec.describe Listing, type: :model do
     end
     When(:result){ Listing.in_grouped_ranges }
     Then do
-      expected = {"1000-1199"=>3,
+      expected = {"600-799"=>0,
+                  "800-999" =>0,
+                  "1000-1199"=>3,
                   "1200-1399"=>2,
                   "1400-1599"=>1,
                   "1600-1799"=>0,
@@ -55,7 +57,7 @@ RSpec.describe Listing, type: :model do
                   "2400-2599"=>1,
                   "2600-2799"=>1,
                   "2800-3000"=>4,
-                  "3001-6000"=>1}
+                  "out of range"=>1}
       expect(result).to eq expected
     end
   end
