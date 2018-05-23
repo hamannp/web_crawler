@@ -7,10 +7,12 @@ class AttributeFormatter
 
   def call
     attrs.merge({
+      listing_date: listing_date,
       available_date: available_date,
       price: price,
       latitude: latitude,
-      longitude: longitude
+      longitude: longitude,
+      image_pairs: image_pairs
     })
   end
 
@@ -18,19 +20,27 @@ class AttributeFormatter
 
   attr_reader :attrs
 
+  def image_pairs
+    Hash[attrs[:image_pairs]]
+  end
+
+  def listing_date
+    Date.parse(attrs[:listing_date]) rescue nil
+  end
+
   def available_date
-    Date.parse(attrs[:available_date]) if attrs[:available_date].present?
+    Date.parse(attrs[:available_date]) rescue nil
   end
 
   def price
-    BigDecimal(attrs[:price].sub('$', '')) if attrs[:price].present?
+    Integer(attrs[:price].sub('$', '')) rescue nil
   end
 
   def latitude
-    Float(attrs[:latitude]) if attrs[:latitude].present?
+    Float(attrs[:latitude]) rescue nil
   end
 
   def longitude
-    Float(attrs[:longitude]) if attrs[:longitude].present?
+    Float(attrs[:longitude]) rescue nil
   end
 end

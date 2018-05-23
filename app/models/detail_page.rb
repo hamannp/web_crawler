@@ -10,6 +10,7 @@ class DetailPage
 
   def attributes
     {
+      listing_date: listing_date,
       title_text: title_text,
       price: price,
       housing: housing,
@@ -24,6 +25,10 @@ class DetailPage
   private
 
   attr_reader :page, :address_class
+
+  def listing_date
+    search('#display-date time').attr('datetime').value
+  end
 
   def title_text
     search('span.postingtitletext span#titletextonly').text

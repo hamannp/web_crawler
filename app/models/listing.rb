@@ -1,16 +1,43 @@
 class Listing < ApplicationRecord
-  #In the real world, I would not use AR and SQL for any kind of query engine.
-  #I think the key things that we would want, if we were aggregating data from
-  #many sites and not just CL :
-  #1. Schema-less-ness. I heard from the 10-gen guys that it takes 3 months to
-  #migrate a single schema update at Craigslist.
-  #2. Ad hoc queries. Users may have very specific kinds of queries. If we can't support
-  #that, then there is no money for us to make.
-  #3. Scalability. The data would shard nicely on many different dimensions.
-  #
-  #I would also add validations or filter CL, but my goal is gulp down everything I can for
-  #future processing, analysis, and display. TSTTCPW is what I'm going for here. So I'm
-  #just going to return the latest records and paginate.
+  serialize :listing_attributes, Array
+  serialize :image_pairs, Hash
 
-  default_scope { order(created_at: :desc) }
+  GROUPED_RANGES_SQL = <<-SQL
+    select t.range as [range],
+    count(*) as [occurences]
+    from (
+      select case
+        when price between 1000 and 1199 then '1000-1199'
+        when price between 1200 and 1399 then '1200-1399'
+        when price between 1400 and 1599 then '1400-1599'
+        when price between 1600 and 1799 then '1600-1799'
+        when price between 1800 and 1999 then '1800-1999'
+        when price between 2000 and 2199 then '2000-2199'
+        when price between 2200 and 2399 then '2200-2399'
+        when price between 2400 and 2599 then '2400-2599'
+        when price between 2600 and 2799 then '2600-2799'
+        when price between 2800 and 3000 then '2800-3000'
+        else '3001-6000' end as range
+    from listings) t
+    group by t.range
+    SQL
+
+  DEFAULT_RANGE_GROUPS = {"1000-1199"=>0,
+                          "1200-1399"=>0,
+                          "1400-1599"=>0,
+                          "1600-1799"=>0,
+                          "1800-1999"=>0,
+                          "2000-2199"=>0,
+                          "2200-2399"=>0,
+                          "2400-2599"=>0,
+                          "2600-2799"=>0,
+                          "2800-3000"=>0,
+                          "3001-6000"=>0}.freeze
+
+  def self.in_grouped_ranges
+     DEFAULT_RANGE_GROUPS.merge(connection.execute(GROUPED_RANGES_SQL).inject({}) do |memo, group_range|
+                            memo[group_range['range']] = group_range['occurences']
+                            memo
+                          end)
+  end
 end
